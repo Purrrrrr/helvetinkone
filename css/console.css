@@ -47,8 +47,31 @@ body, html {
   width: 100%;
   overflow-x: hidden;
 }
-.console p {
+.console > .line {
   margin: 0;
   padding: 0;
   white-space: pre;
+  text-shadow: -1px 1px 3px rgba(64,192,64,0.2),
+               1px -1px 3px rgba(64,192,64,0.2);
+  animation: fadeouttext 1s;
+  -webkit-animation: fadeouttext 1s; /* Safari and Chrome */
+}
+
+@keyframes fadeouttext {
+  from {
+    text-shadow: -1.5px  1.5px 3px rgba(128,255,128,0.9), 
+                  1.5px -1.5px 3px rgba(128,255,128,0.9);
+  }
+  to {
+    text-shadow: -1px 1px 3px rgba(64,192,64,0.2),
+                 1px -1px 3px rgba(64,192,64,0.2);
+  }
+}
+
+@-webkit-keyframes fadeouttext /* Safari and Chrome */ {
+}
+
+.line > .random {
+  text-shadow: -1.5px  1.5px 3px rgba(128,255,128,0.9), 
+                1.5px -1.5px 3px rgba(128,255,128,0.9);
 }

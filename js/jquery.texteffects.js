@@ -120,9 +120,9 @@ http://fourdesire.com
             output = '';
             for (y = _k = 0, _ref2 = ticker - 1; 0 <= _ref2 ? _k <= _ref2 : _k >= _ref2; y = 0 <= _ref2 ? ++_k : --_k) {
               if (y < (ticker - 1) / 2) {
-                output += text[y];
+                output += '<span class="text">'+text[y]+'</span>';
               } else {
-                output += getRandomChar();
+                output += '<span class="random">'+getRandomChar()+'</span>';
               }
             }
             outputs.push(output);
@@ -139,9 +139,9 @@ http://fourdesire.com
           output = text.slice(0, +(text.length / 2) + 1 || 9e9);
           for (x = _m = _ref5 = parseInt(text.length / 2 + 1, 10), _ref6 = text.length - 1; _ref5 <= _ref6 ? _m <= _ref6 : _m >= _ref6; x = _ref5 <= _ref6 ? ++_m : --_m) {
             if (x < tickerFromMiddle) {
-              output += text[x];
+              output += '<span class="text">'+text[x]+'</span>';
             } else {
-              output += getRandomChar();
+              output += '<span class="random">'+getRandomChar()+'</span>';
             }
           }
           tickerFromMiddle++;
