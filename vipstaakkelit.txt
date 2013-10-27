@@ -1,0 +1,33 @@
+Suolan ja viljan vipstaakkelit:
+Kulutus: 3
+Tuottaa: 10 paunaa viljaa ja suolaa kuin tyhjästä!
+
+Käymiskammio:
+Kulutus: 5 + max. 15 paunaa viljaa
+Tuottaa: litran vahvaa viinaa jokaista viljayksikköä kohden
+         Saostaa 10 kpl louhikäärmeen suomuja
+
+Pronssi-Wolframi-Ilmariittisaostin
+Kulutus: 20 + ilmariittia tai vahvaa viinaa tai molempia max. 30 yks./l
+Tuottaa: Tuottaa 400 yksikköä tehoa jokaista ilmariittipaunaa kohden
+         Tuottaa 20 yksikköä tehoa jokaista vahvaa viinalitraa kohden
+         Tuottaa 5000 yksikköä tehoa jokaista yhdistetyä ilmariittipaunaa ja viinalitraa kohden
+
+Tyhjiöimaisin
+Kulutus: 1 yksikkö tehoa
+Tuottaa: 100 yksikköä tehoa + 150 ilmariittipaunaa kohden max 1x
+
+Louhikäärme-takonaattori:
+Kulutus 5 yksikköä tehoa, max. 17 louhikäärmeen suomua
+Takoo louhikäärmeen suomuista ilmariittia 3 paunaa per vaihe.
+5 paunaa jos suomut saostettuja
+
+Hilavitkutin
+Kulutus: 3 yksikköä tehoa
+Tuplaa joka vaiheessa yhden masiinan käymisnopeuden siten, että se seuraaavassa vaiheessa suoritetaan kahdesti. Aloittaa masiinoiden läpikäymisen käynnistysjärjestyksessä. Saattaa nopeuttaa myös itsensä, jolloin seuraava nopeutus onkin nelinkertainen. 
+Nopeutetut vipstaakkelit vievät tietenkin nopeutuksen verran enemmän tehoa ja ainehia.
+
+Väkivaraanipyöritin
+Kulutus: 10 litraa vahvaa viinaa, 2 paunaa suolaa
+Tuottaa litroittain ensiluokkaista kyyviinaa, josta
+kovettuu keinotekoisia louhikäärmeen suomuja viisi kappaletta per vaihe.

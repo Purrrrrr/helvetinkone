@@ -1,16 +1,18 @@
 (function( $ ){
 
-  $.fn.console = function(width) {
+  $.fn.console = function(width, factor) {
 
     // Setup options
     var w = width || 60;
+    var f = factor || 23;
     var effectOptions = {
       fps: 20,
       repeat: 5,
     };
     var skip = false;
     var queueRunPallalelDelay = false;
-    this.fitText(w/23);
+    var runWhenComplete = true; 
+    this.fitText(w/f);
 
     var $this = $(this);
     function putNewline(text) {
@@ -24,9 +26,10 @@
     //this.testString = getTestString(w);
 
     this.skip = function(t) { skip = t; };
-    this.faster = function() {
+    this.faster = function(f) {
+      var fps = f || 10;
       queue(function(n) { 
-        effectOptions.fps = 10;
+        effectOptions.fps = fps;
         effectOptions.repeat = 1;
         n();
       });
@@ -34,8 +37,11 @@
     this.setQueueParallelDelay = function(t) {
       queueRunPallalelDelay = t;
     };
-    this.playNoise = playNoise;
+    this.setRunWhenComplete = function(t) {
+      runWhenComplete = t == true;
+    };
     this.addLine = function addLine(text) {
+      //console.log(text);
       queue(function(next) {      
         putNewline(text).textEffect(effectOptions, next);
       });
@@ -78,7 +84,7 @@
               nextHasRan = true;
             }
 
-            func(cont);
+            func(runWhenComplete ? cont : function() {});
             setTimeout(cont, d);
           });
         } else {
@@ -129,13 +135,6 @@
     str += chars[i%chars.length].repeat(w);
     return str;
   }
-
-  function playNoise() {
-    audioElement.play();
-  }
-
-  var audioElement = document.createElement('audio');
-  audioElement.setAttribute('src', 'dial_up.ogg');
 
 })( jQuery );
 
