@@ -56,7 +56,7 @@ $(function() {
       cont.append(laitaStatus($('<div class="panel panel-default"></div>')));
       $("#results").append(cont);
     });
-    $("#powah").text("Lopullinen teho "+sampo.vars.powah+"GW");
+    $("#powah").text("Lopullinen teho "+sampo.vars.powah+"TW");
   }
 
   function sampoShutDown() {
