@@ -43,7 +43,7 @@ var getMachine =(function() {
     sampo.print("Kärrätään viljaa varastosta "+v+" paunaa...");
     sampo.print("Sekoitetaan louhikäärmeen suomuja...");
     sampo.print("Pulputi...");
-    sampo.print("Saostettu "+sampo.vars.saostetut_suomut+" louhiukäärmeen suomua.");
+    sampo.print("Saostettu "+sampo.vars.saostetut_suomut+" louhikäärmeen suomua.");
     sampo.print("Väkiviinaa käytettävissä "+sampo.vars.etanoli+" litraa.");
   });
   machine(3,"Pronssi-Wolframi-Ilmariittisaostin", 20, function(sampo) {
@@ -116,6 +116,7 @@ var Sampo = (function() {
         s.console.wait(200);
       }
 
+      s.print("Vaihe "+s.phase+" ajettu");
       s.console.wait(2000);
       s.phase++;
     };

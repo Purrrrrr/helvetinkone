@@ -7,7 +7,7 @@ $(function() {
   init_c.skip(skip > 0);
   init_c.addLine("Please wait..."); 
   init_c.addLine("Urstrix initializing..."); 
-  init_c.wait(1500); 
+  init_c.wait(3500); 
 
   init_c.skip(false);
   init_c.queue(function() {
