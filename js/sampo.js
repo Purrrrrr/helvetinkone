@@ -117,7 +117,7 @@ var getMachines =(function() {
     var taottu = kerroin * suomut;
     sampo.vars.ilmariitti += taottu;
     sampo.print("Taotaan "+suomut+" "+(saostettuja ? " saostetusta" : "")+ " louhikäärmeen suomusta ilmariittia...");
-    sampo.print("Sammon varastoissa on nyt "+sampo.vars.ilmariittia+" paunaa ilmariittia!");
+    sampo.print("Sammon varastoissa on nyt "+sampo.vars.ilmariitti+" paunaa ilmariittia!");
   });
   machine(14,"Hilavitkutin", 
   [
@@ -233,9 +233,6 @@ var Sampo = (function() {
         if (s.failed) break;
         skipnum++;
 
-      }
-      if (typeof(afterPhaseCallback) == "function") {
-        afterPhaseCallback(7);
       }
 
       s.console.skip(false);

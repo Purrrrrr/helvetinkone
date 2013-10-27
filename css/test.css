@@ -32,6 +32,26 @@ h1 {
   border: 1px solid #CCC;
   height: 2em;
   margin-bottom: 4px;
+  position: relative;
+}
+.mini-vipstaakkeli a {
+  position: absolute;
+  right: 3px;
+  top: 0px;
+}
+#olemassa .mini-vipstaakkeli a span:after {
+  content: " >>"
+}
+#kaytossa .mini-vipstaakkeli a {
+  position: absolute;
+  left: 3px;
+  top: 0px;
+}
+#kaytossa .mini-vipstaakkeli a span:before{
+  content: "<< "
+}
+#kaytossa .mini-vipstaakkeli {
+  padding-left: 55px;
 }
 
 .sortable-placeholder {

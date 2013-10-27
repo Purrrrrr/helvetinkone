@@ -11,30 +11,33 @@ $(function() {
     cont.append("<div class='pre' >"+this.description+"</div>");
     machineList.append(cont);
   });
-  var statusList = $('#sampostatus');
-  $.each(sampo.vars, function(i, v) {
-    if (i == "powah") i = "teho";
-    statusList.append("<div>"+i+" = "+v+"</div>");
-  });
+  function laitaStatus(lista) {
+    $.each(sampo.vars, function(i, v) {
+      if (i == "powah") i = "teho";
+      lista.append("<div>"+i+" = "+v+"</div>");
+    });
+    return lista;
+  }
+  laitaStatus($('#sampostatus'));
 
   var controls = $("#controls");
   
   $.each(machines, function(i) {
     var opt = $('<div class="mini-vipstaakkeli">'+this.name+' </div>');
     opt[0].code = this.code;
-    opt.append("<a href='#'>Siirrä &gt;&gt;</a>");
+    opt.append("<a href='#'><span>Siirrä</span></a>");
     controls.find("#olemassa").append(opt);
   });
   $( "#olemassa, #kaytossa" ).sortable({
     connectWith: '.sortable'
   });
   $( "#olemassa div a" ).live("click", function() {
-    $(this).text("<< Siirrä");
+    //$(this).text("<< Siirrä");
     $("#kaytossa").append($(this).parent());
     return false;
   });
   $( "#kaytossa div a" ).live("click", function() {
-    $(this).text("Siirrä >>");
+    //$(this).text("Siirrä >>");
     $("#olemassa").append($(this).parent());
     return false;
   });
@@ -49,6 +52,8 @@ $(function() {
     }, function(i) {
       var cont = $('<div class="col-md-4 panel panel-default"></div>');
       cont.append($("#sampoconsole > *"));
+      cont.append($("<strong>Sammon status</strong>"));
+      cont.append(laitaStatus($('<div class="panel panel-default"></div>')));
       $("#results").append(cont);
     });
     $("#powah").text("Lopullinen teho "+sampo.vars.powah+"GW");
