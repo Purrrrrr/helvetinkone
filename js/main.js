@@ -84,7 +84,7 @@ $(function() {
       rand_c2.addLine(""+ s);
     }
     
-    var codes = [15, 1, 8, 14, 7, 3];
+    var codes = [2, 9, 1, 3, 5, 6];
     sampo.run(codes, skip, sampoShutDown);
   }
 

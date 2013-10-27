@@ -1,47 +1,13 @@
 $(function() {
   var sampo_c = $("#sampoconsole").console(40, 10);
   var sampo = new Sampo(sampo_c);
-
-  var machineList = $('#vipstaakkelit');
+  var codes = [];
   var machines = getMachines();
-  $.each(machines, function() {
-    var cont = $('<div class="vipstaakkeli col-md-4 panel panel-default"></div>');
-    cont.append("<h2>"+this.name+"</h2>");
-    cont.append("<p>Koodi: "+this.code+"</p>");
-    cont.append("<div class='pre' >"+this.description+"</div>");
-    machineList.append(cont);
-  });
-  function laitaStatus(lista) {
-    $.each(sampo.vars, function(i, v) {
-      if (i == "powah") i = "teho";
-      lista.append("<div>"+i+" = "+v+"</div>");
-    });
-    return lista;
-  }
-  laitaStatus($('#sampostatus'));
-
-  var controls = $("#controls");
   
-  $.each(machines, function(i) {
-    var opt = $('<div class="mini-vipstaakkeli">'+this.name+' </div>');
-    opt[0].code = this.code;
-    opt.append("<a href='#'><span>Siirrä</span></a>");
-    controls.find("#olemassa").append(opt);
-  });
-  $( "#olemassa, #kaytossa" ).sortable({
-    connectWith: '.sortable'
-  });
-  $( "#olemassa div a" ).live("click", function() {
-    //$(this).text("<< Siirrä");
-    $("#kaytossa").append($(this).parent());
-    return false;
-  });
-  $( "#kaytossa div a" ).live("click", function() {
-    //$(this).text("Siirrä >>");
-    $("#olemassa").append($(this).parent());
-    return false;
-  });
-
+  addMachineDescriptions();
+  laitaStatus($('#sampostatus'));
+  addControls();
+  
   runSampo = function(codes) {
     $("#results").empty();
     sampo.failFun = sampoShutDown;
@@ -64,11 +30,6 @@ $(function() {
   }
 
   $("#aja").click(function() {
-    var codes = [];
-    $("#kaytossa .mini-vipstaakkeli").each(function(i) {
-      codes.push(this.code);
-    });
-    console.log(codes);
     if (codes.length != 6) {
       alert("Laita tasan kuusi vipstaakkelia Sampoon!");
       return;
@@ -78,4 +39,57 @@ $(function() {
     sampo = new Sampo(sampo_c);
     runSampo(codes);
   });
+
+  function addMachineDescriptions() {
+    var machineList = $('#vipstaakkelit');
+    $.each(machines, function() {
+      var cont = $('<div class="vipstaakkeli col-md-4 panel panel-default"></div>');
+      cont.append("<h2>"+this.name+" (laite nro. "+this.code+")</h2>");
+      cont.append("<div class='pre' >"+this.description+"</div>");
+      machineList.append(cont);
+    });
+  }
+  function laitaStatus(lista) {
+    $.each(sampo.vars, function(i, v) {
+      if (i == "powah") i = "teho";
+      lista.append("<div>"+i+" = "+v+"</div>");
+    });
+    return lista;
+  }
+  function addControls() {
+    $.each(machines, function(i) {
+      var opt = $('<div id="vipstaakkeli'+this.code+'" class="mini-vipstaakkeli">'+this.name+' </div>');
+      opt[0].code = this.code;
+      opt.append("<a href='#'><span>Siirrä</span></a>");
+      $("#olemassa").append(opt);
+    });
+    if (typeof(localStorage.sampoCodes) == 'string') {
+      $.each(localStorage.sampoCodes.split(","), function(i, code) {
+        $("#kaytossa").append($("#vipstaakkeli"+code));
+      });
+      updateCodes();
+    }
+    $( "#olemassa, #kaytossa" ).sortable({
+      connectWith: '.sortable'
+    });
+    $( "#olemassa div a" ).live("click", function() {
+      $("#kaytossa").append($(this).parent());
+      updateCodes();
+      return false;
+    });
+    $( "#kaytossa div a" ).live("click", function() {
+      $("#olemassa").append($(this).parent());
+      updateCodes();
+      return false;
+    });
+    function updateCodes() {
+      codes = [];
+      $("#kaytossa .mini-vipstaakkeli").each(function(i) {
+        codes.push(this.code);
+      });
+      localStorage.sampoCodes = codes;
+      console.log(codes);
+    }
+    $("#kaytossa").bind('sortupdate', updateCodes);
+  }
 });

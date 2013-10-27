@@ -42,7 +42,21 @@ function generateMachineFunction() {
     sampo.print("Lorem ipsum dolor sit amet, consectetur adipisicing elit.");
     sampo.print("Viljaa käytettävissä "+sampo.vars.vilja+" paunaa. Suolaa käytettävissä "+sampo.vars.suola+" paunaa.");
   });
-  machine(7,"Tervakammio", 
+  machine(2,"Tyhjiöimaisin", 
+  [
+    "Kulutus: 1 yksikkö tehoa",
+    "Tuottaa: 100 yksikköä tehoa + 150 ilmariittipaunaa kohden max 1x",
+  ].join("\n"),
+    1, function(sampo) {
+    var i = sampo.consume("ilmariitti", 1);
+    p = i > 0 ? 250 : 100;
+    sampo.vars.powah += p;
+    sampo.print("Tyhjiöstä imaistu yhteensä "+p+" yksikköä tehoa!");
+    if (i > 0) {
+      sampo.print("Ilmariittia kului tähän yksi pauna.");
+    }
+  });
+  machine(3,"Tervakammio", 
   [
     "Kulutus: 5 + max. 15 paunaa suolaa",
     "Tuottaa: Litran laadukasta mineraalitervaa jokaista suolayksikköä kohden.",
@@ -57,47 +71,48 @@ function generateMachineFunction() {
     sampo.print("Sekoitetaan louhikäärmeen suomuja...");
     sampo.print("Pulputi...");
     sampo.print("Saostettu "+sampo.vars.saostetut_suomut+" louhikäärmeen suomua.");
-    sampo.print("Mineraalitervaa käytettävissä "+sampo.vars.terva+" litraa.");
+    sampo.print("Mineraalitervaa käytettävissä "+sampo.vars.terva+" kappaa.");
   });
-  machine(3,"Pronssi-Wolframi-Ilmariittisaostin", 
+  machine(4,"Alkemiaydin", 
   [
-    "Kulutus: 20 + ilmariittia tai tervee tai molempia max. 30 yks./l",
-    "Tuottaa: Tuottaa 400 yksikköä tehoa jokaista ilmariittipaunaa kohden",
-    "         Tuottaa 20 yksikköä tehoa jokaista tervalitraa kohden",
-    "         Tuottaa 5000 yksikköä tehoa jokaista yhdistetyä ilmariittipaunaa ja tervalitraa kohden",
-    "Laitteen tuottama teho puolitoistakertaistuu, mikäli saostettuja louhikäärmeen suomuja on tarjolla.",
+    "Kulutus: 15% kaikesta käytettävissä olevasta tehosta",
+    "Muuttaa:",
+    "  puolet varaston viljasta suolaksi,",
+    "  kolmanneksen varaston suolastapaunoista kapoiksi tervaa",
+    "  neljänneksen varaston tervakapoista louhikäärmeen suomuiksi",
+    "  viidenneksen kaikista louhikäärmeen suomuista ilmariittipaunoiksi.",
   ].join("\n"),
-    20, function(sampo) {
-    var v = sampo.consume("terva", 30);
-    var i = sampo.consume("ilmariitti", 30);
-    var s = sampo.consume("saostetut_suomut", 1);
-    var t = 0;
-    var min = Math.min(v,i);
-    sampo.print("Saostetaan avaruuden rakennetta...");
-    v -= min;
-    i -= min;
-    t += min*5000;
-    t += i*400;
-    t += v*20;
-    t *= 1 + (s*1.5);
-    sampo.vars.powah += t;
-    sampo.print("Saostettu "+t+" yksikköä tehoa!");
+  0, function(sampo) {
+    var consumption = Math.floor(sampo.vars.powah*0.15);
+    sampo.vars.powah -= consumption;
+    sampo.print("Alkemiaydin imi itseensä "+consumption+" yksikköä tehoa!");
+
+    var flourToSalt = Math.floor(sampo.vars.vilja * 0.5);
+    sampo.vars.vilja -= flourToSalt;
+    sampo.vars.suola += flourToSalt;
+    sampo.print("Loihditaan viljaa suolaksi "+flourToSalt+" paunaa!");
+
+    var saltToTerva = Math.floor(sampo.vars.suola * 0.3333333);
+    sampo.vars.suola -= saltToTerva;
+    sampo.vars.terva += saltToTerva;
+    sampo.print("Suolaa muuttuu tervaksi "+saltToTerva+" paunaa...");
+
+    var tervaToScales = Math.floor(sampo.vars.terva * 0.25);
+    sampo.vars.terva -= tervaToScales;
+    sampo.vars.suomut += tervaToScales;
+    sampo.print("Tervaa saostuu louhikäärmeen suomuiksi "+tervaToScales+" kappaa...");
+
+    var scalesToIlmariitti = Math.floor(sampo.vars.suomut * 0.2);
+    var scalesToIlmariitti2 = Math.floor(sampo.vars.saostetut_suomut * 0.2);
+    sampo.vars.suomut -= scalesToIlmariitti;
+    sampo.vars.saostetut_suomut -= scalesToIlmariitti2;
+    sampo.vars.ilmariitti += scalesToIlmariitti + scalesToIlmariitti2;
+
+    sampo.print("Suomujen rakenne muutttuu...");
+    sampo.print("Poltetaan "+(scalesToIlmariitti+scalesToIlmariitti2)+" louhikäärme suomua ilmariitiksi...");
+    
   });
-  machine(15,"Tyhjiöimaisin", 
-  [
-    "Kulutus: 1 yksikkö tehoa",
-    "Tuottaa: 100 yksikköä tehoa + 150 ilmariittipaunaa kohden max 1x",
-  ].join("\n"),
-    1, function(sampo) {
-    var i = sampo.consume("ilmariitti", 1);
-    p = i > 0 ? 250 : 100;
-    sampo.vars.powah += p;
-    sampo.print("Tyhjiöstä imaistu yhteensä "+p+" yksikköä tehoa!");
-    if (i > 0) {
-      sampo.print("Ilmariittia kului tähän yksi pauna.");
-    }
-  });
-  machine(8,"Louhikäärme-takonaattori", 
+  machine(5,"Louhikäärme-takonaattori", 
   [
     "Kulutus 13 yksikköä tehoa, max. 17 louhikäärmeen suomua",
     "Takoo louhikäärmeen suomuista ilmariittia 3 paunaa per vaihe.",
@@ -119,7 +134,31 @@ function generateMachineFunction() {
     sampo.print("Taotaan "+suomut+" "+(saostettuja ? " saostetusta" : "")+ " louhikäärmeen suomusta ilmariittia...");
     sampo.print("Sammon varastoissa on nyt "+sampo.vars.ilmariitti+" paunaa ilmariittia!");
   });
-  machine(14,"Hilavitkutin", 
+  machine(6,"Pronssi-Wolframi-Ilmariittisaostin", 
+  [
+    "Kulutus: 20 + ilmariittia tai tervee tai molempia max. 30 yks./l",
+    "Tuottaa: Tuottaa 400 yksikköä tehoa jokaista ilmariittipaunaa kohden",
+    "         Tuottaa 20 yksikköä tehoa jokaista tervakappaa kohden",
+    "         Tuottaa 5000 yksikköä tehoa jokaista yhdistetyä ilmariittipaunaa ja tervakappaa kohden",
+    "Laitteen tuottama teho puolitoistakertaistuu, mikäli saostettuja louhikäärmeen suomuja on tarjolla.",
+  ].join("\n"),
+    20, function(sampo) {
+    var v = sampo.consume("terva", 30);
+    var i = sampo.consume("ilmariitti", 30);
+    var s = sampo.consume("saostetut_suomut", 1);
+    var t = 0;
+    var min = Math.min(v,i);
+    sampo.print("Saostetaan avaruuden rakennetta...");
+    v -= min;
+    i -= min;
+    t += min*5000;
+    t += i*400;
+    t += v*20;
+    t *= 1 + (s*1.5);
+    sampo.vars.powah += t;
+    sampo.print("Saostettu "+t+" yksikköä tehoa!");
+  });
+  machine(9,"Hilavitkutin", 
   [
     "Kulutus: 100 yksikköä tehoa",
     "Tuplaa joka vaiheessa yhden masiinan käymisnopeuden siten, että se seuraaavassa vaiheessa suoritetaan kahdesti. Aloittaa masiinoiden läpikäymisen käynnistysjärjestyksessä. Osaa nopeuttaa tietenkin myös itsensä, jolloin seuraava nopeutus onkin nelinkertainen. ",

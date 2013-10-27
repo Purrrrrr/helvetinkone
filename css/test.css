@@ -1,5 +1,5 @@
 .vipstaakkeli {
-  min-height: 320px;
+  min-height: 155px;
 }
 
 .pre {
@@ -8,6 +8,11 @@
 
 h1 {
   font-size: 2em;
+  margin: 0.5em 0;
+}
+h2 {
+  font-size: 1.4em;
+  font-weight: bold;
   margin: 0.5em 0;
 }
 
