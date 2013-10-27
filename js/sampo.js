@@ -122,7 +122,7 @@ var getMachines =(function() {
   machine(14,"Hilavitkutin", 
   [
     "Kulutus: 100 yksikköä tehoa",
-    "Tuplaa joka vaiheessa yhden masiinan käymisnopeuden siten, että se seuraaavassa vaiheessa suoritetaan kahdesti. Aloittaa masiinoiden läpikäymisen käynnistysjärjestyksessä. Saattaa nopeuttaa myös itsensä, jolloin seuraava nopeutus onkin nelinkertainen. ",
+    "Tuplaa joka vaiheessa yhden masiinan käymisnopeuden siten, että se seuraaavassa vaiheessa suoritetaan kahdesti. Aloittaa masiinoiden läpikäymisen käynnistysjärjestyksessä. Osaa nopeuttaa tietenkin myös itsensä, jolloin seuraava nopeutus onkin nelinkertainen. ",
     "Nopeutetut vipstaakkelit vievät tietenkin nopeutuksen verran enemmän tehoa ja ainehia.",
   ].join("\n"),
     100, function(sampo, countOfRunsInPhase) {

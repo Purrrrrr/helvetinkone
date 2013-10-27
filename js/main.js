@@ -57,7 +57,7 @@ $(function() {
   var fail = audio('fail.ogg');
   //sox -n tone.ogg synth 180 square 20+550  gain -20 bass 1 fade 0.5 180 0.5
   var tone = audio('tone.ogg');
-  tone.volume = 0.5;
+  tone.volume = 0.8;
   var sampo_c = $("#sampoconsole").console(40, 10);
   var rand_c = $("#rand").console(6, 15);
   var rand_c2 = $("#rand2").console(6, 15);
