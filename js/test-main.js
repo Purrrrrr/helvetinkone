@@ -73,7 +73,8 @@ $(function() {
       alert("Laita tasan kuusi vipstaakkelia Sampoon!");
       return;
     }
-
+    
+    getMachines = generateMachineFunction();
     sampo = new Sampo(sampo_c);
     runSampo(codes);
   });

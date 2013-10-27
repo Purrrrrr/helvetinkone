@@ -1,4 +1,4 @@
-var getMachines =(function() {
+function generateMachineFunction() {
   var machines = {};
   function machine(code, name, description, consumption, workings) {
     var machina = {
@@ -148,7 +148,8 @@ var getMachines =(function() {
     return machines;
   };
   
-})();
+}
+var getMachines = generateMachineFunction();
 function getMachine(code) {
   var machines = getMachines();
   if (machines.hasOwnProperty(code)) {
