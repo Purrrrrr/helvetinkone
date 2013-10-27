@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sampo-testaaja</title>
+    <meta charset="utf-8" />
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.sortable.js"></script>
+    <script src="js/hacks.js"></script>
+    <script src="js/console-lite.js"></script> <script src="js/sampo.js"></script>
+    <script src="js/test-main.js"></script>
+    <link href='css/bootstrap.css' rel='stylesheet' type='text/css'>  
+    <link href='css/test.css' rel='stylesheet' type='text/css'>  
+</head>
+<body>
+  <div class="container">
+    <h1>Vipstaakkelit</h1>
+    <div id="vipstaakkelit" class="row">  
+    </div>
+    <div class="row">
+      <div class="col-md-2">
+        <h1>Sammon alkustatus</h1>
+        <div id="sampostatus" class="panel panel-default">
+        </div>
+      </div>
+      <div class="col-md-10 panel panel-default">
+        <h1>Aja Sampo-sekvenssi</h1>
+        <p>Noita lootia voi sitten hiirellä raahata laatikosta toiseen.</p>
+        <div id="controls" class="row">  
+          <div class="col-md-6">
+            <h6>Käyttämättömät vipstaakkelit</h6>
+            <ul id="olemassa" class="sortable"></ul>
+          </div>
+          <div class="col-md-6">
+            <h6>Ajettavat vipstaakkelit</h6>
+            <ul id="kaytossa" class="sortable"></ul>
+          </div>
+        </div>
+        <p><button id="aja">Aja!</button></p>
+      </div>
+    </div>
+    <div id="sampoconsole" style="display: none;">  
+    </div>
+    <h1>Ajon tulokset</h1>
+    <p id="powah">      </p>
+    <div id="results" class="row">  
+    </div>
+  </div>
+</body>
+</html>

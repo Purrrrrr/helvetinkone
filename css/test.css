@@ -1,0 +1,42 @@
+.vipstaakkeli {
+  min-height: 250px;
+}
+
+.pre {
+  white-space: pre-wrap;  
+}
+
+h1 {
+  font-size: 2em;
+  margin: 0.5em 0;
+}
+
+#sampostatus, #controls {
+  padding: 10px;
+}
+#powah {
+  font-size: 1.4em;
+}
+
+#controls ul, #controls li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#controls .sortable {
+  padding: 5px 5px;
+  border: 1px solid black;
+  min-height: 150px;
+}
+.mini-vipstaakkeli {
+  border: 1px solid #CCC;
+  height: 2em;
+  margin-bottom: 4px;
+}
+
+.sortable-placeholder {
+  border: 1px dashed #CCC;
+  background: none;
+  height: 2em;
+  margin-bottom: 4px;
+}

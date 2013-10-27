@@ -64,7 +64,6 @@ $(function() {
   rand_c.faster(25);
   rand_c2.faster(25);
   var sampo = new Sampo(sampo_c);
-  var failed = false;
 
   function sampoScreen() {
     bach.currentTime=18;
@@ -84,28 +83,9 @@ $(function() {
       }
       rand_c2.addLine(""+ s);
     }
-
-    sampo.print("Käynnistetään järjestelmiä");
-    sampo_c.wait(1000);
-    sampo_c.setRunWhenComplete(false);
-
-    var codes = [1, 15, 7, 3];
-    var skipnum = 5;
-    var delays = [2300,1500,800,700,500,400];
-    for(var i = 0; i < codes.length; i++) {
-      sampo_c.faster(20-i*2);
-
-      sampo_c.setQueueParallelDelay(delays[i]);
-      sampo_c.skip(skip > (skipnum));
-      sampo.runPhase(codes[i]);
-      skipnum++;
-    }
-
-    sampo_c.skip(false);
-    if (!failed) {
-      sampo.print("Järjestelmä käynnistetty!");
-      sampoShutDown();
-    }
+    
+    var codes = [15, 1, 8, 14, 7, 3];
+    sampo.run(codes, skip, sampoShutDown);
   }
 
   function sampoShutDown() {
@@ -118,8 +98,8 @@ $(function() {
       var t = 23;
       setInterval(function() { bach.currentTime = t; }, 50);
       setTimeout(function() { 
-        bach.fadeTo(0, 0.01, 80);
-        fail.fadeTo(0, 0.01, 80);
+        bach.fadeTo(0, 0.05, 80);
+        fail.fadeTo(0, 0.05, 80);
       }, 8000);
       cont();
     });
@@ -134,7 +114,7 @@ $(function() {
       $('#samposcreen').fadeOut(5000, function() {
         $('#connectionscreen').show();
         c.addLine("Connection lost...");
-        c.addLine("The remote system reported a power rating of "+sampo.vars.powah+" Jigawatts.");
+        c.addLine("The remote system reported a power rating of "+sampo.vars.powah+" terawatts.");
       });
     });
   }
