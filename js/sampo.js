@@ -182,7 +182,10 @@ var Sampo = (function() {
       this.vars[item] -= amount;
       return amount;
     }
-    this.print = function(str) { console.log(str); s.console.addLine(str); };
+    this.print = function(str) { 
+      //console.log(str); 
+      s.console.addLine(str); 
+    };
     this.runPhase = function(machineCode) {
       var newMachine = getMachine(machineCode);
       s.print("--------------------------------------------------------------------------------");
@@ -202,6 +205,23 @@ var Sampo = (function() {
       s.print("Vaihe "+s.phase+" ajettu");
       s.console.wait(2000);
       s.phase++;
+    };
+    this.postScore = function() {
+      console.log("posting...");
+      var source = location.pathname;
+      var sequence = [];
+      for (var i = 0; i < s.machines.length; i++) {
+        sequence.push(s.machines[i].name);
+      }
+      $.ajax({
+        url: "http://purrrrrr.dy.fi/Koodikori/helvetinkone/topscores/post.php",
+        type: "POST",
+        data: {
+          source: source,
+          score: s.vars.powah,
+          sequence: sequence.join(", ")
+        }
+      });
     };
     this.fail = function() {
       this.print("Ylikuormitus!!");
@@ -241,6 +261,7 @@ var Sampo = (function() {
         s.print("Järjestelmä käynnistetty!");
         sampoShutDown();
       }
+      this.postScore();
     }
 
   }
