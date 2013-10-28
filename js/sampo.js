@@ -12,18 +12,18 @@ function generateMachineFunction() {
     machina.run = function(sampo) {
       var p = 1, s = machina.speed; //No machine can rerun itself!
       sampo.print("Käynnistetään "+machina.name+"...");
+      sampo.vars.powah -= machina.consumption*s;
+      if (machina.consumption > 1) {
+        sampo.print("Ohjataan laitteeseen "+machina.consumption*s+" yksikköä tehoa");
+      } else if (machina.consumption*s == 1) {
+        sampo.print("Ohjataan laitteeseen yksi yksikkö tehoa");
+      }
+      if (sampo.vars.powah < 0) {
+        sampo.fail();
+        return;
+      }
       while(p<=s) {
-        sampo.vars.powah -= machina.consumption;
-        if (machina.consumption > 1) {
-          sampo.print("Ohjataan laitteeseen "+machina.consumption+" yksikköä tehoa");
-        } else if (machina.consumption == 1) {
-          sampo.print("Ohjataan laitteeseen yksi yksikkö tehoa");
-        }
-        if (sampo.vars.powah < 0) {
-          sampo.fail();
-          return;
-        }
-        workings.call(machina,sampo,p);
+        if (workings.call(machina,sampo,p) === false) break;
         if (sampo.failed) return;
         p++;
       }
@@ -109,7 +109,7 @@ function generateMachineFunction() {
     sampo.vars.ilmariitti += scalesToIlmariitti + scalesToIlmariitti2;
 
     sampo.print("Suomujen rakenne muutttuu...");
-    sampo.print("Poltetaan "+(scalesToIlmariitti+scalesToIlmariitti2)+" louhikäärme suomua ilmariitiksi...");
+    sampo.print("Poltetaan "+(scalesToIlmariitti+scalesToIlmariitti2)+" louhikäärmeen suomuista ilmariitiksi...");
     
   });
   machine(5,"Louhikäärme-takonaattori", 
@@ -132,7 +132,7 @@ function generateMachineFunction() {
     var taottu = kerroin * suomut;
     sampo.vars.ilmariitti += taottu;
     sampo.print("Taotaan "+suomut+" "+(saostettuja ? " saostetusta" : "")+ " louhikäärmeen suomusta ilmariittia...");
-    sampo.print("Sammon varastoissa on nyt "+sampo.vars.ilmariitti+" paunaa ilmariittia!");
+    sampo.print("Varastoissa on nyt "+sampo.vars.ilmariitti+" paunaa ilmariittia!");
   });
   machine(6,"Pronssi-Wolframi-Ilmariittisaostin", 
   [
@@ -158,6 +158,46 @@ function generateMachineFunction() {
     sampo.vars.powah += t;
     sampo.print("Saostettu "+t+" yksikköä tehoa!");
   });
+  machine(8,"Kierteishyypiöintikäämi", 
+  [
+    "Kulutus: 90% kaikesta käytettävissä olevasta tehosta",
+    "Laskee valtaosan käytettävissä olevasta tehosta yli-eteerisille taajuuuksille.",
+    "Tehot pysyvät siellä, kasvaen jokaisesta laitteen aktivoitumisesta puolet, kunnes käämi pyydystää ne takaisin viimeisen vaiheen koneen sammuttua.",
+    "Hilavitkuttimen tehostus vähentää käämin imemän tehon puoleen.",
+  ].join("\n"),
+  0, function(sampo) {
+    var consumption = Math.floor(sampo.vars.powah*0.9/this.speed);
+    sampo.vars.powah -= consumption;
+    sampo.print("Lähetetään energiaa "+consumption+" yksikköä ylä-eetteriin..");
+    
+    var macs = sampo.machines;
+    var last = macs[macs.length-1];
+    if (last == this) {
+      sampo.vars.powah += consumption;
+      sampo.print("Haettiin ylä-eetterin energia takaisin muuttumattomana");
+    } else {
+      var coeff = 1;
+      var m = 0;
+      for (; this != macs[m] && m < sampo.phase; m++) {}
+      for (m += 1; m < macs.length; m++) {
+        coeff *= 1.5;
+      }
+      var payback = Math.ceil(consumption*coeff);
+
+      var original = last.run;
+      last.run = function(sampo) {
+        original(sampo);
+        sampo.print(this.name+" jälkiaktivoituu...");
+        sampo.print("Saatiin ylä-eetterin energiaa takaisin "+payback+" yksikköä");
+        sampo.console.queue(function(cont) {
+          sampo.vars.powah += payback;
+        });
+        last.run = original;
+      };
+    }
+    
+    return false;
+  });
   machine(9,"Hilavitkutin", 
   [
     "Kulutus: 100 yksikköä tehoa",
@@ -181,6 +221,31 @@ function generateMachineFunction() {
     } else {
       sampo.print(mach.name + " nopetettu. Se toimii nyt "+mach.speed+" kertaa per vaihe");
     }
+  });
+  var spaceStrings = [
+    "Ammutaan sädeaseita...",
+    "Lasketaan hyperavaruuslentoratoja...",
+    "Laukaistaan protonitorpedoja...",
+    "Käännetään kuolemantähteä...",
+    "Teroitetaan valomiekkoja...",
+    "Kaupataan droideja...",
+    "Tiivistetään roskakuilua...",
+    "Surmataan kapinallisia jedejä...",
+    "Tuhotaan rauhanomaisia planeettoja...",
+    "Manipuloidaan Galaaktista Senaattia...",
+  ];
+  machine(10,"Anakronismi", 
+  [
+    "Kulutus: 10",
+    "Tähtituhoojan keskustietokone v3.4",
+    "Ohjaa imperiumin ylpeyttä kaukaisessa ajassa kaukaisessa galaksissa.",
+    "Tuottaa kymmenen kappaa tervaa savuisten saasteiden kera.",
+  ].join("\n"),
+    10, function(sampo) {
+    sampo.vars.terva += 10;
+    var s = spaceStrings.shift();
+    sampo.print(s);
+    spaceStrings.push(s);
   });
 
   return function() {

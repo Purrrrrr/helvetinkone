@@ -1,4 +1,5 @@
 <?php
+  header('Access-Control-Allow-Origin: *');
   $connection = new PDO('sqlite:scores.sqlite3');
   $connection->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
   $a = $connection->prepare("
