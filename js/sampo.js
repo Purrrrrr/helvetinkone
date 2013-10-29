@@ -2,13 +2,13 @@
 var vardata = (function() {
   var d = {};
   $.each({
-    powah: ["hornanliekin", "hornanliekkiä", "voimaa"],
-    suomut: ["louhikäärmeen suomun", "louhikäärmeen suomua", ""],
-    saostetut_suomut: ["saostetun louhikäärmen suomun", "saostettua louhikäärmeen suomua", ""],
-    suola: ["paunan", "paunaa", "suolaa"],
-    vilja: ["vakallisen", "vakallista", "viljaa"],
-    terva: ["kapan", "kappaa", "tervaa"],
-    ilmariitti: ["paunan", "paunaa", "ilmariittia"],
+    powah: ["hornanliekin", "hornanliekkiä", "voimaa", "voimasta", "voiman"],
+    suomut: ["louhikäärmeen suomun", "louhikäärmeen suomua", "", "suomuista", "suomuvarannon"],
+    saostetut_suomut: ["saostetun louhikäärmen suomun", "saostettua louhikäärmeen suomua", "", "saostetuista suomuista", "saostetun suomuvarannon"],
+    suola: ["paunan", "paunaa", "suolaa", "suolasta", "suolan"],
+    vilja: ["vakallisen", "vakallista", "viljaa", "viljasta", "viljan"],
+    terva: ["kapan", "kappaa", "tervaa", "tervasta", "tervan"],
+    ilmariitti: ["paunan", "paunaa", "ilmariittia", "ilmariitista", "ilmariitin"],
   }, function(i,v) {
     d[i] = {
       units: function(a, m) {
@@ -18,6 +18,8 @@ var vardata = (function() {
       unit_singular: v[0],
       unit: v[1],
       partitive: v[2],
+      sta: v[3],
+      gen: v[4],
     }
   });
   return d;
@@ -104,14 +106,24 @@ function generateMachineFunction() {
     machina.consumptions = function() {
       var l = [];
       var c = machina.consumption;
-      if (typeof(c) == "string" && c.match(/^(\d+)%$/)) {
-        c += " kaikesta käytettävissä olevasta voimasta";
-        l.push(c);
-      } else if (c != 0) {
-        l.push(vardata.powah.units(c));
+      function makeTxt(i, v, ofWhat, post) {
+        post = post || "";
+        if (typeof(v) == "string" && v.match(/^(\d+)%$/)) {
+          if (v == "100%") {
+            return "Kaiken käytettävissä oleva "+vardata[i].gen;
+          } else {
+            return c+" kaikesta käytettävissä olevasta "+vardata[i].sta;
+          }
+        } else if (v != 0) {
+          return vardata[i].units(v)+post;
+        }
       }
+      l.push(makeTxt("powah", c));
+      $.each(machina.needs, function(i,v) {
+        l.push(makeTxt(i, v));
+      });
       $.each(machina.consumes, function(i,v) {
-        l.push(vardata[i].units(v) + ", jos saatavilla");
+        l.push(makeTxt(i, v,", jos saatavilla"));
       });
 
       return l.concat(machina.consumesTexts);
@@ -154,21 +166,26 @@ function generateMachineFunction() {
   ].join("\n"),
   {
     consumption: 5,
-    consumes: { suola: 15, suomut: 10 },
+    consumes: { suola: "100%", suomut: 10 },
     producesTexts: [
       "Kapan jokaista ottamaansa suolapaunaa kohden.",
       "Saostettuja suomuja ottamansa määrän"
     ],
   }, function(sampo) {
     this.produce("terva", this.consumed.suola);
-    this.produce("saostetut_suomut", this.consumed.suomut);
-    sampo.print("Kärrätään suolaa varastosta "+this.consumed.suola+" paunaa...");
-    if (this.consumed.suomut) {
-      sampo.print("Sekoitetaan sekaan louhikäärmeen suomuja...");
-    }
-    sampo.print("Pulputi...");
-    if (this.consumed.suomut) {
-      sampo.print("Saostettu "+this.consumed.suomut+" louhikäärmeen suomua.");
+    if (this.consumed.suola > 0) {
+      this.produce("saostetut_suomut", this.consumed.suomut);
+      sampo.print("Kärrätään suolaa varastosta "+this.consumed.suola+" paunaa...");
+      if (this.consumed.suomut) {
+        sampo.print("Sekoitetaan sekaan louhikäärmeen suomuja...");
+      }
+      sampo.print("Pulputi...");
+      if (this.consumed.suomut) {
+        sampo.print("Saostettu "+this.consumed.suomut+" louhikäärmeen suomua.");
+      }
+    } else {
+      this.produce("suomut", this.consumed.suomut);
+      sampo.print("Varastoista ei löytynyt yhtään suolaa mineraalitervan keittoon!");
     }
   });
   machine(4,"Alkemiaydin", 
@@ -183,11 +200,11 @@ function generateMachineFunction() {
     consumption: "15%",
   }, function(sampo) {
     this.consume("vilja", "50%");
-    this.produce("salt", this.consumed.vilja);
-    sampo.print("Loihditaan viljaa suolaksi "+this.produced.suola+" paunaa!");
+    this.produce("suola", this.consumed.vilja);
+    sampo.print("Loihditaan viljaa suolaksi "+this.produced.suola+" vakallista!");
 
-    this.consume("salt", "33.3333%");
-    this.produce("terva", this.consumed.salt);
+    this.consume("suola", "33.3333%");
+    this.produce("terva", this.consumed.suola);
     sampo.print("Suolaa muuttuu tervaksi "+this.produced.terva+" paunaa...");
 
     this.consume("terva", "25%");
