@@ -6,7 +6,7 @@ var vardata = (function() {
     suomut: ["louhikäärmeen suomun", "louhikäärmeen suomua", ""],
     saostetut_suomut: ["saostetun louhikäärmen suomun", "saostettua louhikäärmeen suomua", ""],
     suola: ["paunan", "paunaa", "suolaa"],
-    vilja: ["paunan", "paunaa", "viljaa"],
+    vilja: ["vakallisen", "vakallista", "viljaa"],
     terva: ["kapan", "kappaa", "tervaa"],
     ilmariitti: ["paunan", "paunaa", "ilmariittia"],
   }, function(i,v) {
@@ -31,6 +31,7 @@ function generateMachineFunction() {
       name: name,
       description: description,
       consumption: 0,
+      needs: {},
       consumes: {},
       consumesTexts: [],
       consumed: {},
@@ -57,7 +58,20 @@ function generateMachineFunction() {
       var p = 1, s = machina.speed; //No machine can rerun itself!
       var consumed = 0;
       while(p<=s) {
+        var failNeed = false;
+        $.each(machina.needs, function(k, a) {
+          if (!sampo.hasEnough(k,a)) {
+            failNeed = k;
+          }
+        });
+        if (failNeed) {
+          var runText = "Ajetaan vipstaakkelia "+machina.name+".";
+          sampo.print(machina.name+" ei voinut käynnistyä, koska "+vardata[failNeed].partitive+" ei ollut tarpeeksi");
+          return;
+        };
+
         consumed += machina.consume("powah", machina.consumption);
+        $.each(machina.needs, consume);
         $.each(machina.consumes, consume);
         $.each(machina.produces, produce);
         p++;
@@ -110,7 +124,7 @@ function generateMachineFunction() {
     "Loihtii viljaa ja suolaa kuin tyhjästä!",
   ].join("\n"),
   {
-    consumption: 3,
+    consumption: 32,
     produces: {
       suola: 10,
       vilja: 10
@@ -124,9 +138,9 @@ function generateMachineFunction() {
   ].join("\n"),
   {
     consumption: 1,
-    consumes: { ilmariitti: 1 },
+    consumes: { ilmariitti: 100 },
     produces: { powah: 100 },
-    producesTexts: ["250 hornanliekkiä mikäli ilmariittia on käytettävissä"]
+    producesTexts: ["250 hornanliekkiä jokaista käytettyä ilmariittipaunaa kohden"]
   }, function(sampo) {
     p = this.consumed.ilmariitti * 150 + this.produced.powah;
     sampo.print("Tyhjiöstä imaistu yhteensä "+vardata.powah.units(p)+"!");
@@ -248,6 +262,39 @@ function generateMachineFunction() {
       sampo.print("Reaktio lopahti, ei saatu tarveaineita.");
     }
   });
+  machine(7,"Ahtopaahdin", 
+  [
+    "Paahtaa viljasta ensiluokkaista ajoainetta, joka ajetaan Ahdin kidusten läpi tervan kera tuottaen ihmeellisiä aineita ja mahtavasti voimaa!",
+  ].join("\n"),
+  {
+    consumption: 80,
+    needs: { vilja: 10 },
+    consumes: { terva: 18 },
+    producesTexts: [
+      "Jos tervaa saatiin yli "+vardata.terva.units(9)+", laite tuottaa:",
+      "  "+vardata.saostetut_suomut.units(70),
+      "  "+vardata.powah.units(900),
+      "Jos tervaa saatiin alle "+vardata.terva.units(9)+", laite tuottaa:",
+      "  "+vardata.ilmariitti.units(30),
+      "  "+vardata.powah.units(13000),
+      "Laite tekee molemmat jos tervaa on tasan 9 kappaa"
+    ]
+
+  }, function(sampo) {
+    sampo.print("Paahdetaan viljaa...");
+    sampo.print("Ohjataan paahdettu ajoaine Ahdin kiduksiin...");
+    if (this.consumed.terva >= 9) {
+      sampo.print("Kiduksista löytyy saostettuja louhikäärmeen suomuja!");
+      this.produce("powah", 900);
+      this.produce("saostetut_suomut", 70);
+    }
+    if (this.consumed.terva <= 9) {
+      sampo.print("Kiduksista löytyy ilmariittia!");
+      this.produce("powah", 13000);
+      this.produce("ilmariitti", 30);
+    }
+
+  });
   machine(8,"Kierteishyypiöintikäämi", 
   [
     "Laskee valtaosan käytettävissä olevasta voimasta yli-eteerisille taajuuuksille ja siirtyy sitten lepotilaan imemään seuraavien laitteiden eetterivärähdyksiä.",
@@ -358,7 +405,7 @@ var Sampo = (function() {
       saostetut_suomut: 0,
       suola: 0,
       vilja: 0,
-      terva: 10,
+      terva: 0,
       ilmariitti: 10,
     };
     this.failFun = function(cont) {cont();};
@@ -370,6 +417,14 @@ var Sampo = (function() {
       this.vars[item] -= amount;
       return true;
     } */
+    this.hasEnough = function(item, amount) {
+      if (typeof(amount) == "string") {
+        var m = amount.match(/^([0-9.]+)%$/);
+        if (!m) return 0;
+        amount = Math.floor(this.vars[item] * (m[1]/100));
+      }
+      return amount <= this.vars[item];
+    }
     this.consume = function(item, amount) {
       if (typeof(amount) == "string") {
         var m = amount.match(/^([0-9.]+)%$/);
@@ -450,7 +505,6 @@ var Sampo = (function() {
 
         if (s.failed) break;
         skipnum++;
-
       }
 
       s.console.skip(false);
