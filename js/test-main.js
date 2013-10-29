@@ -22,11 +22,11 @@ $(function() {
       cont.append(laitaStatus($('<div class="panel panel-default"></div>')));
       $("#results").append(cont);
     });
-    $("#powah").text("Lopullinen teho "+sampo.vars.powah+"TW");
+    $("#powah").text("Lopullinen voima "+sampo.vars.powah+" hornanliekkiä");
   }
 
   function sampoShutDown() {
-    sampo.print("Käyttöteho: "+sampo.vars.powah);
+    sampo.print("Käyttövoima: "+sampo.vars.powah);
   }
 
   $("#aja").click(function() {
@@ -45,13 +45,19 @@ $(function() {
     $.each(machines, function() {
       var cont = $('<div class="vipstaakkeli col-md-4 panel panel-default"></div>');
       cont.append("<h2>"+this.name+" (laite nro. "+this.code+")</h2>");
+      var consumptions = this.consumptions().join("\n  ");
+      var productions = this.productions().join("\n  ");
+      cont.append("<div class='pre' >Kuluttaa:\n  "+consumptions+"</div>");
+      if (productions != "") {
+        cont.append("<div class='pre' >Tuottaa:\n  "+productions+"</div>");
+      }
       cont.append("<div class='pre' >"+this.description+"</div>");
       machineList.append(cont);
     });
   }
   function laitaStatus(lista) {
     $.each(sampo.vars, function(i, v) {
-      if (i == "powah") i = "teho";
+      if (i == "powah") i = "voima";
       lista.append("<div>"+i+" = "+v+"</div>");
     });
     return lista;
