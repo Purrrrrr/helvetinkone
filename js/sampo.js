@@ -42,11 +42,7 @@ function generateMachineFunction() {
     $.extend(machina, vars);
     var consume = machina.consume = function(k, a) {
       var c = machina.sampo.consume(k,a);
-      if (machina.consumed.hasOwnProperty(k)) {
-        machina.consumed[k] += c;
-      } else {
-        machina.consumed[k] = c;
-      }
+      machina.consumed[k] += c;
       return c;
     }
     var produce = machina.produce = function(k, a) {
@@ -68,7 +64,7 @@ function generateMachineFunction() {
       }
       var runText = "Ajetaan vipstaakkelia "+machina.name+".";
       if (consumed > 0) {
-        runText += " Se syö "+vardata.powah.units(consumed);
+        runText += "\nSe syö "+vardata.powah.units(consumed);
       }
       sampo.print(runText);
       if (sampo.vars.powah == 0) {
@@ -133,7 +129,7 @@ function generateMachineFunction() {
     producesTexts: ["250 hornanliekkiä mikäli ilmariittia on käytettävissä"]
   }, function(sampo) {
     p = this.consumed.ilmariitti * 150 + this.produced.powah;
-    sampo.print("Tyhjiöstä imaistu yhteensä "+p+" hornanliekkiä voimaa!");
+    sampo.print("Tyhjiöstä imaistu yhteensä "+vardata.powah.units(p)+"!");
     if (this.consumed.ilmariitti > 0) {
       sampo.print("Ilmariittia kului tähän yksi pauna.");
     }
@@ -202,14 +198,12 @@ function generateMachineFunction() {
     consumesTexts: ["täydentää tavallisista suomuista, jos saostetut eivät riitä"]
   }, function(sampo) {
     var taottu = 15*this.consumed.saostetut_suomut;
-    var suomut = this.consumed.saostetut_suomut;
     if (this.consumed.saostetut_suomut < 17) {
-      taottu += 3*this.consume("suomut", 17-suomut);
-      suomut += this.consumed.suomut;
+      taottu += 3*this.consume("suomut", 17-this.consumed.saostetut_suomut);
     }
-    console.log(this.consumed);
     this.produce("ilmariitti", taottu);
 
+    var suomut = this.consumed.saostetut_suomut + this.consumed.suomut;
     sampo.print("Taotaan "+suomut+" louhikäärmeen suomusta "+vardata.ilmariitti.units(taottu, " verran ilmariittia..."));
   });
   machine(6,"Pronssi-Wolframi-Ilmariittireaktori", 
@@ -249,7 +243,7 @@ function generateMachineFunction() {
         msg += "Louhikäärmeen suomu lisätty...";
       }
       sampo.print(msg);
-      sampo.print("Saostettu "+t+" hornanliekkiä voimaa!");
+      sampo.print("Saostettu "+vardata.powah.units(t)+"!");
     } else {
       sampo.print("Reaktio lopahti, ei saatu tarveaineita.");
     }
@@ -284,10 +278,8 @@ function generateMachineFunction() {
         original(sampo);
         sampo.console.wait(400);
         sampo.print(n+" jälkiaktivoituu...");
-        sampo.print("Saatiin ylä-eetterin energiaa takaisin "+payback+" hornanliekkiä!");
-        sampo.console.queue(function(cont) {
-          kaami.produce("powah", payback);
-        });
+        sampo.print("Saatiin ylä-eetterin energiaa takaisin "+vardata.powah.units(payback," verran voimaa!"));
+        kaami.produce("powah", payback);
         last.run = original;
       };
     }
@@ -464,7 +456,9 @@ var Sampo = (function() {
       s.console.skip(false);
       if (!s.failed) {
         s.print("Järjestelmä käynnistetty!");
-        sampoShutDown();
+        s.console.queue(function(cont) {
+          sampoShutDown();
+        });
       }
       this.postScore();
     }
