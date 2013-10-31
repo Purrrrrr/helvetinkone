@@ -3,16 +3,67 @@ $(function() {
 
   var init_c = $("#logoscreen .console").console();
   var skip = parseInt(getURLParameter("skip"), 10) || 0;
+  var codes = (getURLParameter("code") ? getURLParameter("code").split(",") : false) || [];
 
   init_c.skip(skip > 0);
   init_c.addLine("Please wait..."); 
   init_c.addLine("Urstrix initializing..."); 
-  init_c.wait(3500); 
+  init_c.wait(1500); 
 
   init_c.skip(false);
-  init_c.queue(function() {
-    $('#logoscreen').fadeOut(connectionScreen);
-  });
+
+  function query_number(next) {
+    var listening = true;
+    init_c.addLine("Please input command code:"); 
+
+    document.addEventListener("keypress", function(event) {
+      if (!listening) return;
+      switch(event.keyCode) {
+        case 13: //Enter
+        listening = false;
+        if (codes.length != 6) {
+          init_c.addLine("Please input valid command code:"); 
+          query_number();
+        } else {
+          init_c.addLine("Code accepted!"); 
+          next();
+        }
+        break;
+        case 8: //Backspace
+        if (codes.length > 0) {
+          $("#logoscreen .console .line:last span:last").remove();
+          codes.pop();
+        }
+        break;
+        default:
+          var c = event.charCode;
+          var i = -1;
+          if (c >= 97 && c <= 102) c -= (97-65);
+          if (c >= 65 && c <= 70) i = c+10-65;
+          if (c >= 48 && c <= 57) i = c-48;
+          if (i > 0 && codes.length < 6) {
+            codes.push(i);
+            init_c.addText(i.toString(16).toUpperCase()); 
+          }
+      }
+    });
+  };
+
+  if (codes.length != 6) {
+    codes = [];
+    query_number(fadeToConnectionScreen);
+  } else {
+    fadeToConnectionScreen();
+  }
+
+  function fadeToConnectionScreen() {
+    var s = [];
+    for(var i = 0; i < 6; i++) s[i] = codes[i].toString(16).toUpperCase();
+    init_c.addLine("Executing command code "+s.join("")); 
+    init_c.queue(function() {
+      $('#logoscreen').fadeOut(connectionScreen);
+    });
+  }
 
   // Connection screen phase
   var c = $("#mainconsole").console(100);
@@ -84,7 +135,6 @@ $(function() {
       rand_c2.addLine(""+ s);
     }
     
-    var codes = typeof(localStorage.sampoCodes) == 'string' ? localStorage.sampoCodes.split(",") : [2, 9, 1, 3, 5, 6];
     sampo.run(codes, skip, sampoShutDown);
   }
 

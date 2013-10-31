@@ -135,9 +135,9 @@ http://fourdesire.com
             ticker = text.length;
           }
         }
-        for (indexer = _l = _ref3 = parseInt(text.length / 2, 10), _ref4 = text.length - 1; _ref3 <= _ref4 ? _l <= _ref4 : _l >= _ref4; indexer = _ref3 <= _ref4 ? ++_l : --_l) {
+        for (indexer = _l = parseInt(text.length / 2, 10); _l <= text.length - 1; indexer = ++_l) {
           output = text.slice(0, +(text.length / 2) + 1 || 9e9);
-          for (x = _m = _ref5 = parseInt(text.length / 2 + 1, 10), _ref6 = text.length - 1; _ref5 <= _ref6 ? _m <= _ref6 : _m >= _ref6; x = _ref5 <= _ref6 ? ++_m : --_m) {
+          for (x = _m = parseInt(text.length / 2 + 1, 10); _m <= text.length - 1; x = ++_m) {
             if (x < tickerFromMiddle) {
               output += '<span class="text">'+text[x]+'</span>';
             } else {

@@ -21,6 +21,12 @@
       $this.append(line);
       return line;
     };
+    function putText(text) {
+      var line = $("<span></span>");
+      line.append(text);
+      $this.find(".line:last").append(line);
+      return line;
+    }
 
     //this.randomString = function(l) { l = l || w; return getRandomString(l);}
     //this.testString = getTestString(w);
@@ -44,6 +50,12 @@
       //console.log(text);
       queue(function(next) {      
         putNewline(text).textEffect(effectOptions, next);
+      });
+    };
+    this.addText = function addText(text) {
+      //console.log(text);
+      queue(function(next) {      
+        putText(text).textEffect(effectOptions, next);
       });
     };
     this.wait = function(t) {

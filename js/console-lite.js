@@ -9,6 +9,12 @@
       $this.append(line);
       return line;
     };
+    function putText(text) {
+      var line = $("<span></span>");
+      line.append(text);
+      $this.find(".line:last").append(line);
+      return line;
+    }
 
     this.skip = function(t) {};
     this.faster = function(f) {};
@@ -16,6 +22,9 @@
     this.setRunWhenComplete = function(t) {};
     this.addLine = function addLine(text) {
       putNewline(text);
+    };
+    this.addText = function addText(text) {
+      putText(text);
     };
     this.wait = function(t) {
       this.addLine("...");

@@ -306,7 +306,7 @@ function generateMachineFunction() {
       this.produce("saostetut_suomut", 70);
     }
     if (this.consumed.terva <= 9) {
-      sampo.print("Kiduksista löytyy ilmariittia!");
+      sampo.print("Kiduksista kalastetaan ilmariittia!");
       this.produce("powah", 13000);
       this.produce("ilmariitti", 30);
     }
@@ -529,6 +529,7 @@ var Sampo = (function() {
         s.print("Järjestelmä käynnistetty!");
         s.console.queue(function(cont) {
           sampoShutDown();
+          cont();
         });
       }
       this.postScore();

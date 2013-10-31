@@ -1,0 +1,14 @@
+@font-face {
+  font-family: 'Offside';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Offside'), local('Offside-Regular'), url(_zg2zDrkjlbS-MUZInZH8g.woff) format('woff');
+  /* http://themes.googleusercontent.com/static/fonts/offside/v1/_zg2zDrkjlbS-MUZInZH8g.woff */
+}
+@font-face {
+  font-family: 'VT323';
+  font-style: normal;
+  font-weight: 400;
+  src: local('VT323'), local('VT323-Regular'), url(LfMzj2MWAZU6qzlnp1MNbg.woff) format('woff');
+  /* http://themes.googleusercontent.com/static/fonts/vt323/v4/LfMzj2MWAZU6qzlnp1MNbg.woff */
+}
