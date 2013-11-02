@@ -11,6 +11,7 @@ function uniq(c) {
 
 $(function() {
   $('#logoscreen .titletext').fitText(0.9);
+  setInterval(function() { $(window).resize(); }, 500);
 
   var init_c = $("#logoscreen .console").console();
   var skip = parseInt(getURLParameter("skip"), 10) || 0;
