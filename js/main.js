@@ -169,29 +169,56 @@ $(function() {
     sampo.print("Käyttöteho: "+sampo.vars.powah);
     sampo_c.wait(1000);
     sampo.print("Käynnistetään automaattinen alasajo...");
-    sampo_c.queue(function(cont) { 
+    sampo_c.wait(2000);
+    sampo_c.queue(function(cont) {
       tone.fadeTo(0, 0.10, 80);
-      fail.play();
-      var t = 23;
-      setInterval(function() { bach.currentTime = t; }, 50);
       setTimeout(function() { 
-        bach.fadeTo(0, 0.05, 80);
-        fail.fadeTo(0, 0.05, 80);
-      }, 8000);
+        fail.play();
+        var t = 23;
+        setInterval(function() { bach.currentTime = t; }, 50);
+      }, 1000);
+      setTimeout(function() { 
+        bach.fadeTo(0, 0.03, 80);
+        fail.fadeTo(0, 0.03, 80);
+      }, 16000);
+
+      var i = 8;
+      $.each(meters, function(k) {
+        setTimeout(function() {
+          meters[k].fadeOut();
+        }, i*400 + 100);
+        i--;
+      });
+      setTimeout(function() {
+        $("#meters").animate({top: -200});
+        setTimeout(function() { 
+          $("#rand").animate({left: -$("#rand").width()}, 700) 
+        }, 200);
+        setTimeout(function() { 
+          $("#rand2").animate({left: $(document).width()+$("#rand").width()}, 700)
+        }, 1200);
+      }, 9*400 + 100);
       cont();
     });
     sampo_c.wait(1500);
     for(var m = sampo.machines.length-1; m >= 0; m--) {
       sampo.print("Sammutetaan: "+sampo.machines[m].name+"...");
-      sampo_c.wait(300);
+      sampo_c.wait(500);
     }
-    sampo.print("Katkaistaan yhteyksiä");
+    sampo.print("Alasajo valmis!");
+    sampo_c.wait(500);
+    sampo.print("Katkaistaan yhteyttä...");
     sampo_c.queue(function() { 
       bach.fadeTo(0, 0.10, 80);
       $('#samposcreen').fadeOut(5000, function() {
         $('#connectionscreen').show();
         c.addLine("Connection lost...");
         c.addLine("The remote system reported a power rating of "+sampo.vars.powah+" terawatts.");
+        c.addLine("Press any key to reboot");
+        document.addEventListener("keypress", function(event) {
+          location.reload();
+        });
+
       });
     });
   }
