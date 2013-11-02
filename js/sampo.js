@@ -224,7 +224,7 @@ function generateMachineFunction() {
     this.consume("suomut", "20%");
     this.consume("saostetut_suomut", "20%");
     this.produce("ilmariitti", this.consumed.suomut+this.consumed.saostetut_suomut);
-    sampo.print("Suomujen rakenne muutttuu...");
+    sampo.print("Suomujen rakenne muuttuu...");
     sampo.queueUpdate("suomut", "saostetut_suomut", "ilmariitti");
     sampo.print("Poltetaan "+this.produced.ilmariitti+" louhikäärmeen suomuista ilmariitiksi...");
     

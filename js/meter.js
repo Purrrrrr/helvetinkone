@@ -32,7 +32,7 @@
 
           newWidth = totalWidth/10;
           //console.log("minned: "+newWidth);
-          bar.animate({width: newWidth}, 300, "easeInExpo", function() {
+          bar.animate({width: newWidth}, 500, "easeInExpo", function() {
             bar.width(totalWidth); 
           });
         } else if ( v > scaleMax * 1.1) {
@@ -40,7 +40,7 @@
 
           newWidth = totalWidth;
           //console.log("maxed: "+newWidth);
-          bar.animate({width: newWidth}, 300, "easeInExpo", function() {
+          bar.animate({width: newWidth}, 500, "easeInExpo", function() {
             bar.width(totalWidth/10); 
           });
         } else {
