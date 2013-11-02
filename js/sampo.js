@@ -382,7 +382,7 @@ function generateMachineFunction() {
         var originalFun = mach.run;
         mach.speed *= 2;
         mach.run = function(sampo) {
-          sampo.print(mach.name + " nopetettu kahdestilaukeavaksi.");
+          sampo.print(mach.name + " nopeutettu kahdestilaukeavaksi.");
           originalFun(sampo);
         };
       })(mach);
