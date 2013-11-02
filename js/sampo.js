@@ -161,7 +161,7 @@ function generateMachineFunction() {
     sampo.queueUpdate("powah", "ilmariitti");
     sampo.print("Tyhjiöstä imaistu yhteensä "+vardata.powah.units(p)+"!");
     if (this.consumed.ilmariitti > 0) {
-      sampo.print("Ilmariittia kului tähän yksi pauna.");
+      sampo.print("Tähän kului "+vardata.ilmariitti.units(this.consumed.ilmariitti)+".");
     }
   });
   machine(3,"Tervakammio", 

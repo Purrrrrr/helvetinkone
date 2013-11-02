@@ -143,9 +143,10 @@ $(function() {
     terva: $("#terva").meter(2, 1.1, 1.1),
     ilmariitti: $("#ilmariitti").meter(2, 1.1, 1.1),
   };
+  var originals = {}
   $.each(meters, function(k) {
-    meters[k].update(sampo.vars[k]);
     meters[k].hide();
+    originals[k] = sampo.vars[k];
   });
   sampo.updateFun = function(i, v) {
     //console.log(i+": "+v);
@@ -176,6 +177,7 @@ $(function() {
       $.each(meters, function(k) {
         setTimeout(function() {
           meters[k].fadeIn();
+          meters[k].update(originals[k]);
         }, i*400 + 100);
         i++;
       });
