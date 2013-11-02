@@ -156,7 +156,8 @@ function generateMachineFunction() {
     produces: { powah: 100 },
     producesTexts: ["250 hornanliekkiä jokaista käytettyä ilmariittipaunaa kohden"]
   }, function(sampo) {
-    p = this.consumed.ilmariitti * 150 + this.produced.powah;
+    this.produce("powah", this.consumed.ilmariitti * 250);
+    p = this.produced.powah;
     sampo.queueUpdate("powah", "ilmariitti");
     sampo.print("Tyhjiöstä imaistu yhteensä "+vardata.powah.units(p)+"!");
     if (this.consumed.ilmariitti > 0) {
