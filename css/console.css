@@ -104,9 +104,44 @@ body, html {
   position: absolute;
   bottom: 0;
   left: 7%;
-  min-height: 90%;
+  min-height: 85%;
   width: 86%;
 }
+
+#meters {
+  position: absolute;
+  top: 0;
+  left: 7%;
+  height: 17%;
+  width: 86%;
+  background: #420;
+  background: linear-gradient(to bottom, rgba(68,34,0,1) 0%,rgba(68,34,0,1) 90%,rgba(68,34,0,0) 100%);
+}
+
+.meter {
+  position: relative;
+  float: left;
+  width: 14%;
+  height: 80%;
+  padding: 10px;
+  overflow: visible;
+}
+.meter .title {
+  height: 25%;
+  overflow: visible;
+}
+.meter .value{
+  height: 70%;
+  overflow: visible;
+}
+.meter .bar {
+  position: absolute;
+  bottom : 0;
+  left: 5%;
+  height: 5%;
+  background: orange;
+}
+
 #rand {
   position: absolute;
   bottom: 0;
@@ -121,6 +156,8 @@ body, html {
   min-height: 100%;
   width: 5.5%;
 }
+
+#samposcreen #meters,
 #samposcreen .console > .line {
   font-family: 'Offside', cursive;
   color: orange;

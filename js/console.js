@@ -1,10 +1,11 @@
 (function( $ ){
 
-  $.fn.console = function(width, factor) {
+  $.fn.console = function(width, factor, fitTextOptions) {
 
     // Setup options
     var w = width || 60;
     var f = factor || 23;
+    var fitTextOptions = fitTextOptions || {};
     var effectOptions = {
       fps: 20,
       repeat: 5,
@@ -12,7 +13,7 @@
     var skip = false;
     var queueRunPallalelDelay = false;
     var runWhenComplete = true; 
-    this.fitText(w/f);
+    this.fitText(w/f, fitTextOptions);
 
     var $this = $(this);
     function putNewline(text) {
@@ -84,7 +85,7 @@
     var tasks = [];
     var running = false;
     /* Take an animator function with an end callback and execute it or put it into a queue */
-    var queue = this.queue = function queue(func) {
+    var queue = this.queue = function queue(func, instant) {
       if (skip) return;
       if (running) {
         if (queueRunPallalelDelay !== false) {
@@ -95,9 +96,13 @@
               if (!nextHasRan) next();
               nextHasRan = true;
             }
-
-            func(runWhenComplete ? cont : function() {});
-            setTimeout(cont, d);
+            
+            if (instant) {
+              func(cont);
+            } else {
+              func(runWhenComplete ? cont : function() {});
+              setTimeout(cont, d);
+            }
           });
         } else {
           tasks.push(func);

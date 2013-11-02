@@ -50,7 +50,7 @@ function generateMachineFunction() {
     }
     var produce = machina.produce = function(k, a) {
       machina.produced[k] += a;
-      machina.sampo.vars[k] += a;
+      machina.sampo.produce(k, a);
     }
     machina.run = function(sampo) {
       $.each(vardata, function(k) {
@@ -82,6 +82,7 @@ function generateMachineFunction() {
       if (consumed > 0) {
         runText += "\nSe syö "+vardata.powah.units(consumed);
       }
+      sampo.queueUpdate("powah");
       sampo.print(runText);
       if (sampo.vars.powah == 0) {
         sampo.fail();
@@ -142,6 +143,7 @@ function generateMachineFunction() {
       vilja: 10
     }
   }, function(sampo) {
+    sampo.queueUpdate("suola","vilja");
     sampo.print("Lorem ipsum dolor sit amet, consectetur adipisicing elit.");
   });
   machine(2,"Tyhjiöimaisin", 
@@ -155,6 +157,7 @@ function generateMachineFunction() {
     producesTexts: ["250 hornanliekkiä jokaista käytettyä ilmariittipaunaa kohden"]
   }, function(sampo) {
     p = this.consumed.ilmariitti * 150 + this.produced.powah;
+    sampo.queueUpdate("powah", "ilmariitti");
     sampo.print("Tyhjiöstä imaistu yhteensä "+vardata.powah.units(p)+"!");
     if (this.consumed.ilmariitti > 0) {
       sampo.print("Ilmariittia kului tähän yksi pauna.");
@@ -175,18 +178,22 @@ function generateMachineFunction() {
     this.produce("terva", this.consumed.suola);
     if (this.consumed.suola > 0) {
       this.produce("saostetut_suomut", this.consumed.suomut);
+      sampo.queueUpdate("suola");
       sampo.print("Kärrätään suolaa varastosta "+this.consumed.suola+" paunaa...");
       if (this.consumed.suomut) {
+        sampo.queueUpdate("suomut");
         sampo.print("Sekoitetaan sekaan louhikäärmeen suomuja...");
       }
       sampo.print("Pulputi...");
       if (this.consumed.suomut) {
+        sampo.queueUpdate("saostetut_suomut");
         sampo.print("Saostettu "+this.consumed.suomut+" louhikäärmeen suomua.");
       }
     } else {
       this.produce("suomut", this.consumed.suomut);
       sampo.print("Varastoista ei löytynyt yhtään suolaa mineraalitervan keittoon!");
     }
+    sampo.queueUpdate("terva");
   });
   machine(4,"Alkemiaydin", 
   [
@@ -201,20 +208,24 @@ function generateMachineFunction() {
   }, function(sampo) {
     this.consume("vilja", "50%");
     this.produce("suola", this.consumed.vilja);
+    sampo.queueUpdate("vilja", "suola");
     sampo.print("Loihditaan viljaa suolaksi "+this.produced.suola+" vakallista!");
 
     this.consume("suola", "33.3333%");
     this.produce("terva", this.consumed.suola);
     sampo.print("Suolaa muuttuu tervaksi "+this.produced.terva+" paunaa...");
+    sampo.queueUpdate("suola", "terva");
 
     this.consume("terva", "25%");
     this.produce("suomut", this.consumed.terva);
     sampo.print("Tervaa saostuu louhikäärmeen suomuiksi "+this.produced.suomut+" kappaa...");
+    sampo.queueUpdate("terva", "suomut");
 
     this.consume("suomut", "20%");
     this.consume("saostetut_suomut", "20%");
     this.produce("ilmariitti", this.consumed.suomut+this.consumed.saostetut_suomut);
     sampo.print("Suomujen rakenne muutttuu...");
+    sampo.queueUpdate("suomut", "saostetut_suomut", "ilmariitti");
     sampo.print("Poltetaan "+this.produced.ilmariitti+" louhikäärmeen suomuista ilmariitiksi...");
     
   });
@@ -235,6 +246,7 @@ function generateMachineFunction() {
     this.produce("ilmariitti", taottu);
 
     var suomut = this.consumed.saostetut_suomut + this.consumed.suomut;
+    sampo.queueUpdate("suomut", "saostetut_suomut", "ilmariitti");
     sampo.print("Taotaan "+suomut+" louhikäärmeen suomusta "+vardata.ilmariitti.units(taottu, " verran ilmariittia..."));
   });
   machine(6,"Pronssi-Wolframi-Ilmariittireaktori", 
@@ -261,6 +273,7 @@ function generateMachineFunction() {
     t += this.consumed.terva*20;
     t *= 1 + (this.consumed.saostetut_suomut*1.5);
     this.produce("powah",t);
+    sampo.queueUpdate("terva", "saostetut_suomut", "ilmariitti");
     sampo.print("Sekoitetaan reaktioaineita...");
     if (t > 0) {
       var msg = "";
@@ -274,6 +287,7 @@ function generateMachineFunction() {
         msg += "Louhikäärmeen suomu lisätty...";
       }
       sampo.print(msg);
+      sampo.queueUpdate("powah");
       sampo.print("Saostettu "+vardata.powah.units(t)+"!");
     } else {
       sampo.print("Reaktio lopahti, ei saatu tarveaineita.");
@@ -298,14 +312,17 @@ function generateMachineFunction() {
     ]
 
   }, function(sampo) {
+    sampo.queueUpdate("vilja","terva");
     sampo.print("Paahdetaan viljaa...");
     sampo.print("Ohjataan paahdettu ajoaine Ahdin kiduksiin...");
     if (this.consumed.terva >= 9) {
+      sampo.queueUpdate("saostetut_suomut");
       sampo.print("Kiduksista löytyy saostettuja louhikäärmeen suomuja!");
       this.produce("powah", 900);
       this.produce("saostetut_suomut", 70);
     }
     if (this.consumed.terva <= 9) {
+      sampo.queueUpdate("ilmariitti");
       sampo.print("Kiduksista kalastetaan ilmariittia!");
       this.produce("powah", 13000);
       this.produce("ilmariitti", 30);
@@ -328,6 +345,7 @@ function generateMachineFunction() {
     var last = macs[macs.length-1];
     if (last == this) {
       this.produce("powah",this.consumed.powah);
+      sampo.queueUpdate("powah");
       sampo.print("Haettiin ylä-eetterin energia takaisin muuttumattomana");
     } else {
       var coeff = 1;
@@ -342,8 +360,9 @@ function generateMachineFunction() {
         original(sampo);
         sampo.console.wait(400);
         sampo.print(n+" jälkiaktivoituu...");
-        sampo.print("Saatiin ylä-eetterin energiaa takaisin "+vardata.powah.units(payback," verran voimaa!"));
         kaami.produce("powah", payback);
+        sampo.queueUpdate("powah");
+        sampo.print("Saatiin ylä-eetterin energiaa takaisin "+vardata.powah.units(payback," verran voimaa!"));
         last.run = original;
       };
     }
@@ -392,6 +411,7 @@ function generateMachineFunction() {
   }, function(sampo) {
     var s = spaceStrings.shift();
     sampo.print(s);
+    sampo.queueUpdate("terva");
     spaceStrings.push(s);
   });
 
@@ -425,15 +445,21 @@ var Sampo = (function() {
       terva: 0,
       ilmariitti: 10,
     };
+    this.updateFun = function() {};
+    this.queueUpdate = function() {
+      for( var i = 0; i < arguments.length; i++ ) {
+        var k = arguments[i];
+        var v = this.vars[k];
+        (function(k,v) {
+          s.console.queue(function(cont) {
+            s.updateFun(k, v);
+            cont();
+          }, true);
+        })(k,v);
+      }
+    };
     this.failFun = function(cont) {cont();};
     this.machines = [];
-    /* this.need = function(item, amount) {
-      if (this.vars[item] < amount) {
-        return false;
-      }
-      this.vars[item] -= amount;
-      return true;
-    } */
     this.hasEnough = function(item, amount) {
       if (typeof(amount) == "string") {
         var m = amount.match(/^([0-9.]+)%$/);
@@ -452,6 +478,10 @@ var Sampo = (function() {
         amount = this.vars[item];
       }
       this.vars[item] -= amount;
+      return amount;
+    }
+    this.produce = function(item, amount) {
+      this.vars[item] += amount;
       return amount;
     }
     this.print = function(str) { 

@@ -115,6 +115,23 @@ $(function() {
   rand_c.faster(25);
   rand_c2.faster(25);
   var sampo = new Sampo(sampo_c);
+  meters = {
+    powah: $("#powah").meter(3, 1.1, 1.1),
+    suomut: $("#suomut").meter(2, 1.1, 1.1),
+    saostetut_suomut: $("#saostetut_suomut").meter(2, 1.1, 1.1),
+    suola: $("#suola").meter(2, 1.1, 1.1),
+    vilja: $("#vilja").meter(2, 1.1, 1.1),
+    terva: $("#terva").meter(2, 1.1, 1.1),
+    ilmariitti: $("#ilmariitti").meter(2, 1.1, 1.1),
+  };
+  $.each(meters, function(k) {
+    meters[k].update(sampo.vars[k]);
+    meters[k].hide();
+  });
+  sampo.updateFun = function(i, v) {
+    //console.log(i+": "+v);
+    meters[i].update(v);
+  }
 
   function sampoScreen() {
     bach.currentTime=18;
@@ -134,6 +151,16 @@ $(function() {
       }
       rand_c2.addLine(""+ s);
     }
+
+    setTimeout(function() {
+      var i = 0;
+      $.each(meters, function(k) {
+        setTimeout(function() {
+          meters[k].fadeIn();
+        }, i*400 + 100);
+        i++;
+      });
+    }, 1000);
     
     sampo.run(codes, skip, sampoShutDown);
   }

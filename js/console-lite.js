@@ -31,7 +31,7 @@
     }
     
     var queue = this.queue = function queue(func) {
-      func();
+      func(function() {});
     };
 
     return this;

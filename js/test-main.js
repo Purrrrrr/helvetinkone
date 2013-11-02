@@ -94,7 +94,7 @@ $(function() {
         codes.push(this.code);
       });
       localStorage.sampoCodes = codes;
-      console.log(codes);
+      //console.log(codes);
     }
     $("#kaytossa").bind('sortupdate', updateCodes);
   }
