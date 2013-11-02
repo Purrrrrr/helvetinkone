@@ -1,4 +1,5 @@
 function uniq(c) {
+  c = c.slice(0);
   var p;
   while(p = c.pop()) {
     for(var i = 0; i < c.length; i++) {
@@ -28,8 +29,6 @@ $(function() {
 
     document.addEventListener("keyup", function(event) {
       if (!listening) return;
-      console.log(codes);
-      console.log(event);
       switch(event.which) {
         case 13: //Enter
         listening = false;
@@ -40,8 +39,9 @@ $(function() {
           init_c.addLine("Please input a valid command code:"); 
           query_number(next);
         } else {
+          console.log(codes);
           init_c.addLine("Code accepted!"); 
-          next();
+          next(codes);
         }
         break;
         case 8: //Backspace
@@ -68,12 +68,15 @@ $(function() {
     init_c.addLine("Please input command code:"); 
     query_number(fadeToConnectionScreen);
   } else {
-    fadeToConnectionScreen();
+    fadeToConnectionScreen(codes);
   }
 
-  function fadeToConnectionScreen() {
+  function fadeToConnectionScreen(codes) {
     var s = [];
-    for(var i = 0; i < 6; i++) s[i] = codes[i].toString(16).toUpperCase();
+    console.log(codes);
+    for(var i = 0; i < 6; i++) {
+      s[i] = codes[i].toString(16).toUpperCase();
+    }
     init_c.addLine("Executing command code "+s.join("")); 
     init_c.queue(function() {
       $('#logoscreen').fadeOut(connectionScreen);

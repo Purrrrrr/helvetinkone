@@ -12,7 +12,7 @@
       if (c.text() == v) return;
       c.empty();
       c.addLine(v);
-      console.log(scale);
+      //console.log(scale);
 
       var totalWidth = m.width()*0.9; 
       var newWidth = 0;
