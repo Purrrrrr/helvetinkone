@@ -1,3 +1,13 @@
+function uniq(c) {
+  var p;
+  while(p = c.pop()) {
+    for(var i = 0; i < c.length; i++) {
+      if (c[i] == p) return false;
+    }
+  }
+  return true;
+}
+
 $(function() {
   $('#logoscreen .titletext').fitText(0.9);
 
@@ -13,17 +23,22 @@ $(function() {
   init_c.skip(false);
 
   function query_number(next) {
+    codes = [];
     var listening = true;
-    init_c.addLine("Please input command code:"); 
 
-    document.addEventListener("keypress", function(event) {
+    document.addEventListener("keyup", function(event) {
       if (!listening) return;
-      switch(event.keyCode) {
+      console.log(codes);
+      console.log(event);
+      switch(event.which) {
         case 13: //Enter
         listening = false;
-        if (codes.length != 6) {
-          init_c.addLine("Please input valid command code:"); 
-          query_number();
+        if (codes.length != 6 || !uniq(codes)) {
+          if (!uniq(codes)) {
+            init_c.addLine("Code has repeated command codes!");
+          }
+          init_c.addLine("Please input a valid command code:"); 
+          query_number(next);
         } else {
           init_c.addLine("Code accepted!"); 
           next();
@@ -36,12 +51,12 @@ $(function() {
         }
         break;
         default:
-          var c = event.charCode;
+          var c = event.which;
           var i = -1;
           if (c >= 97 && c <= 102) c -= (97-65);
           if (c >= 65 && c <= 70) i = c+10-65;
           if (c >= 48 && c <= 57) i = c-48;
-          if (i > 0 && codes.length < 6) {
+          if (i > 0 && i < 11 && codes.length < 6) {
             codes.push(i);
             init_c.addText(i.toString(16).toUpperCase()); 
           }
@@ -50,7 +65,7 @@ $(function() {
   };
 
   if (codes.length != 6) {
-    codes = [];
+    init_c.addLine("Please input command code:"); 
     query_number(fadeToConnectionScreen);
   } else {
     fadeToConnectionScreen();
@@ -206,7 +221,7 @@ $(function() {
       sampo_c.wait(500);
     }
     sampo.print("Alasajo valmis!");
-    sampo_c.wait(500);
+    sampo_c.wait(501);
     sampo.print("Katkaistaan yhteyttä...");
     sampo_c.queue(function() { 
       bach.fadeTo(0, 0.10, 80);
