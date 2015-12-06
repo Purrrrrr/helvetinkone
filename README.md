@@ -2,6 +2,8 @@
 
 Instructions: open sampo.html and enter any six character code with the characters 1 to 9 or A with no repeating characters. Enjoy the madness.
 
+You can also try to run it from [github.io](http://purrrrrr.github.io/helvetinkone/sampo.html "Demo")
+
 # Artwork sources
 
 Urstrix logo adapted under fair use from the urstrix enemy in Final Fantasy XII
