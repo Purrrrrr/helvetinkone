@@ -44,6 +44,7 @@ $(function() {
   var phases = {};
   var codes = [1,2,3,4,5,6,7,8];
   var log10 = Math.log(10);
+  var bestcode = [];
   codes = [1,2,3,4,5,6,7,9,10];
   setTimeout(function() {
     perms(codes,6,[], function(a) {
@@ -54,6 +55,9 @@ $(function() {
       function complete() {
         var phase = sampo.phase;
         var powah = sampo.vars.powah;
+        if (powah > maxPowah) {
+          bestcode = a.join(",");
+        }
         maxPowah = Math.max(maxPowah, powah);
         minPowah = Math.min(minPowah, powah);
         var level = Math.round(Math.log(powah)/log10);
@@ -83,5 +87,6 @@ $(function() {
     console.log(powerlevels);
     console.log(minPowah);
     console.log(maxPowah);
+    console.log(bestcode);
   }, 400);
 });
